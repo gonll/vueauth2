@@ -3,20 +3,37 @@
     <v-toolbar app>
       <v-toolbar-title class="headline text-uppercase">
         <span>Apuest</span>
-        <span class="font-weight-light">APPss</span>
+        <span class="font-weight-light">APP</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn
-        flat
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
+        to="/"
+        class="mr-2"
       >
-        <span class="mr-2">Latest Release</span>
+        Home
+      </v-btn>
+      <v-btn
+        to="/about"
+        class="mr-2"
+      >
+        About
+      </v-btn>
+      <v-btn
+        to="/servicios"
+        class="mr-2"
+      >
+        Servicios
+      </v-btn>
+      <v-btn
+        to="/miembros"
+        class="mr-2"
+      >
+        Miembros
       </v-btn>
     </v-toolbar>
 
     <v-content>
-      <HelloWorld/>
+      <router-view></router-view>
     </v-content>
   </v-app>
 </template>

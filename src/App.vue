@@ -30,6 +30,12 @@
       >
         Miembros
       </v-btn>
+      <v-btn
+        @click="logOut"
+        v-if="this.$store.state.userIsAuthorized"
+      >
+        Logout
+      </v-btn>
     </v-toolbar>
 
     <v-content>
@@ -39,16 +45,23 @@
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld'
+import HelloWorld from './components/HelloWorld';
+import Store from './store'
 
 export default {
   name: 'App',
   components: {
     HelloWorld
   },
+  methods:{
+    logOut(){
+      console.log('Chau');
+      Store.commit('setUserIsAuthorized', false);
+    }
+  },
   data () {
     return {
-      //
+      clientId: process.env.VUE_APP_AUTH0_CONFIG_CLIENTID
     }
   }
 }

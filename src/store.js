@@ -13,6 +13,8 @@ export default new Vuex.Store({
     }
   },
   actions: {
-
+    auth0Login(context){
+      console.log('algo');
+    }
   }
 })

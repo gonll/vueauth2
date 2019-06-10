@@ -5,6 +5,7 @@ import About from './views/About.vue'
 import Servicios from './views/Servicios.vue'
 import Miembros from './views/Miembros.vue'
 import Login from './views/Login.vue'
+import Auth0CallBack from './views/Auth0callback.vue'
 import Store from './store'
 import { userInfo } from 'os';
 
@@ -18,6 +19,11 @@ const router = new Router({
       path: '/',
       name: 'home',
       component: Home
+    },
+    {
+      path: '/auth0callback',
+      name: 'auth0callback',
+      component: Auth0CallBack
     },
     {
       path: '/about',
@@ -43,20 +49,34 @@ const router = new Router({
   ]
 })
 
+
+
+
 router.beforeEach( (to, from, next)=>{
-  //Antes de ingresar a cada ruta, verifico la ruta TO la que vas a ir... y hago algo
-  let routerAuthCheck = true;
-  if (routerAuthCheck){
-    Store.commit('setUserIsAuthorized', true);
+  let routerAuthCheck = false;
+
+  //Si voy a auth0callback actualizo entonces los token
+  if(to.matched.some(record=>record.path == '/auth0callback')){
+    Store.dispatch('auth0HandleAuthentication');
+    next(false); 
   }
+
+  //Antes de ingresar a cada ruta, verifico que este logueado el chango.. al principio siempre supongo que NO
+
+  if ( localStorage.getItem('access_token') && localStorage.getItem('id_token') && localStorage.getItem('expires_at') && localStorage.getItem('expires_at') !== 'undefined' ){
+    let expiresAt = JSON.parse(localStorage.getItem('expires_at'));
+    routerAuthCheck = new Date().getTime() < expiresAt;
+  }
+
+  //Si el chango si estaba logueado, entonces actualizo la variable que me decía que no lo estaba
+  Store.commit('setUserIsAuthorized', routerAuthCheck);
+ 
 
   if (to.matched.some(record => record.meta.requiresAuth)){
     
     //Si requiresAuth es true.. entonces verifico si el usuario YA ESTA LOGUEADO
     if (routerAuthCheck){
-      //Usuario SI logueado
       next();
-      //Debería avisarle al STORE que el usuario esta logueado
     }else{
       //Usuario no logueado
       router.replace('/login');
